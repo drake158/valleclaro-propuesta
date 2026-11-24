@@ -1,18 +1,17 @@
 interface SectionHeaderProps {
   kicker: string;
   title: string;
-  tagline: string;
+  subtitle?: string;
 }
 
-export function SectionHeader({ kicker, title, tagline }: SectionHeaderProps) {
+export function SectionHeader({ kicker, title, subtitle }: SectionHeaderProps) {
   return (
-    <div className="slide-head">
+    <div className="s-head">
       <div>
-        <div className="slide-kicker">{kicker}</div>
-        <h1 className="slide-title">{title}</h1>
-        <div className="slide-bar" />
+        <div className="s-kicker">{kicker}</div>
+        <h1 className="s-title">{title}</h1>
       </div>
-      <p className="slide-tagline">{tagline}</p>
+      {subtitle && <p className="s-sub">{subtitle}</p>}
     </div>
   );
 }

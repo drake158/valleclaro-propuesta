@@ -2,7 +2,6 @@ interface DonutSlice {
   label: string;
   value: number;
   color: string;
-  detail?: string;
 }
 
 interface DonutChartProps {
@@ -18,71 +17,54 @@ export function DonutChart({
   slices,
   centerValue,
   centerLabel,
-  size = 186,
+  size = 152,
   selectedIndex = null,
   onSelect,
 }: DonutChartProps) {
   const total = slices.reduce((sum, s) => sum + s.value, 0) || 1;
-  const radius = 66;
+  const radius = 64;
   const circumference = 2 * Math.PI * radius;
-
   let cumulative = 0;
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
-      <svg width={size} height={size} viewBox="0 0 180 180" style={{ flexShrink: 0 }}>
-        <circle cx="90" cy="90" r={radius} fill="none" stroke="#e6eef7" strokeWidth="22" />
+    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <svg width={size} height={size} viewBox="0 0 176 176" style={{ flexShrink: 0 }}>
+        <circle cx="88" cy="88" r={radius} fill="none" stroke="#e8eef7" strokeWidth="18" />
         {slices.map((s, idx) => {
           const frac = s.value / total;
           const dashLen = frac * circumference;
           const dashOffset = -cumulative * circumference;
           cumulative += frac;
-          const isSelected = selectedIndex === idx;
+          const isSel = selectedIndex === idx;
           return (
             <circle
               key={s.label}
-              cx="90"
-              cy="90"
+              cx="88"
+              cy="88"
               r={radius}
               fill="none"
               stroke={s.color}
-              strokeWidth={isSelected ? 26 : 22}
+              strokeWidth={isSel ? 22 : 18}
               strokeDasharray={`${Math.max(0, dashLen - 1.5)} ${circumference}`}
               strokeDashoffset={dashOffset}
-              transform="rotate(-90 90 90)"
-              style={{ cursor: onSelect ? 'pointer' : 'default', transition: 'stroke-width 0.16s ease' }}
+              transform="rotate(-90 88 88)"
+              style={{ cursor: onSelect ? 'pointer' : 'default', transition: 'stroke-width 0.14s ease' }}
               onClick={() => onSelect?.(idx)}
             />
           );
         })}
-        <text
-          x="90"
-          y="85"
-          textAnchor="middle"
-          fill="#0f2d6b"
-          fontFamily="'Plus Jakarta Sans', sans-serif"
-          fontWeight="800"
-          fontSize="18"
-        >
+        <text x="88" y="84" textAnchor="middle" fill="#0f2d6b" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="500" fontSize="18">
           {centerValue}
         </text>
-        <text
-          x="90"
-          y="104"
-          textAnchor="middle"
-          fill="#64748b"
-          fontFamily="'Inter', sans-serif"
-          fontWeight="600"
-          fontSize="10.5"
-        >
+        <text x="88" y="102" textAnchor="middle" fill="#6c7c93" fontFamily="'Inter', sans-serif" fontWeight="400" fontSize="10.5">
           {centerLabel}
         </text>
       </svg>
 
-      <div style={{ flex: 1, minWidth: 165, display: 'grid', gap: 6 }}>
+      <div style={{ flex: 1, display: 'grid', gap: 5 }}>
         {slices.map((s, idx) => {
-          const pct = ((s.value / total) * 100).toFixed(0);
-          const isSelected = selectedIndex === idx;
+          const pct = Math.round((s.value / total) * 100);
+          const isSel = selectedIndex === idx;
           return (
             <button
               key={s.label}
@@ -93,20 +75,19 @@ export function DonutChart({
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: 8,
-                padding: '5px 8px',
-                borderRadius: 8,
-                border: isSelected ? `1.5px solid ${s.color}` : '1px solid transparent',
-                background: isSelected ? '#f1f7fe' : 'transparent',
+                padding: '3px 6px',
+                border: isSel ? `1px solid ${s.color}` : '1px solid transparent',
+                background: isSel ? '#f2f6fc' : 'transparent',
                 cursor: onSelect ? 'pointer' : 'default',
                 textAlign: 'left',
                 fontFamily: 'var(--font-body)',
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>
-                <span style={{ width: 9, height: 9, borderRadius: 3, background: s.color, flexShrink: 0 }} />
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 12, color: 'var(--ink-mid)' }}>
+                <span style={{ width: 8, height: 8, background: s.color, flexShrink: 0 }} />
                 {s.label}
               </span>
-              <span className="mono" style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--text-muted)' }}>
+              <span className="mono" style={{ fontSize: 11, color: 'var(--ink-soft)' }}>
                 {pct}%
               </span>
             </button>

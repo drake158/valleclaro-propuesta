@@ -1,170 +1,208 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Award,
-  Coins,
-  FlaskConical,
-  Layers,
-  Presentation,
-  RefreshCw,
-  ShieldCheck,
-} from 'lucide-react';
-import { TabFooterNav, type TabMeta } from './components/TabFooterNav';
+import { ChevronLeft, ChevronRight, Maximize, Minimize } from 'lucide-react';
 import { ValleclaroLogo } from './components/ValleclaroLogo';
-import { AlternativasTab } from './tabs/AlternativasTab';
-import { ArquitecturaTab } from './tabs/ArquitecturaTab';
-import { CostosTab } from './tabs/CostosTab';
-import { PocTab } from './tabs/PocTab';
-import { ResilienciaTab } from './tabs/ResilienciaTab';
-import { ResumenTab } from './tabs/ResumenTab';
-import { SeguridadTab } from './tabs/SeguridadTab';
+import { ArchSlide } from './slides/ArchSlide';
+import { CloudSlide } from './slides/CloudSlide';
+import { CoverSlide } from './slides/CoverSlide';
+import { FinancePocSlide } from './slides/FinancePocSlide';
+import { FlowsSlide } from './slides/FlowsSlide';
+import { ProblemSlide } from './slides/ProblemSlide';
+import { ResilienceSlide } from './slides/ResilienceSlide';
+import { SecuritySlide } from './slides/SecuritySlide';
 
-const TABS: TabMeta[] = [
-  { id: 'resumen', num: '00', shortLabel: 'Pitch', fullLabel: 'Pitch Ejecutivo' },
-  { id: 'alternativas', num: '01', shortLabel: 'Nube (89/100)', fullLabel: '01 · Selección Cloud' },
-  { id: 'arquitectura', num: '02', shortLabel: 'Arquitectura', fullLabel: '02 · Arquitectura Multinube' },
-  { id: 'seguridad', num: '03', shortLabel: 'Seguridad', fullLabel: '03 · Seguridad y Ley 1581' },
-  { id: 'resiliencia', num: '04', shortLabel: 'Resiliencia', fullLabel: '04 · Replicación y DR' },
-  { id: 'costos', num: '05', shortLabel: 'Finanzas & Plan', fullLabel: '05 · Finanzas, OKRs y Plan' },
-  { id: 'poc', num: '06', shortLabel: 'PoC (Anexo A)', fullLabel: '06 · PoC Simulada (4 Sem.)' },
+const SLIDES = [
+  { id: 'portada', label: 'Portada', dark: true },
+  { id: 'diagnostico', label: 'Diagnóstico', dark: false },
+  { id: 'nube', label: 'Cloud 89/100', dark: false },
+  { id: 'arquitectura', label: 'Arquitectura', dark: false },
+  { id: 'flujo', label: 'Flujo & TB', dark: false },
+  { id: 'seguridad', label: 'Seguridad', dark: false },
+  { id: 'resiliencia', label: 'Resiliencia', dark: false },
+  { id: 'finanzas', label: 'Finanzas & PoC', dark: false },
 ];
 
-const TAB_ICONS = [Presentation, Award, Layers, ShieldCheck, RefreshCw, Coins, FlaskConical];
-
-function getInitialTabIndex(): number {
+function getInitialSlide(): number {
   const hash = window.location.hash.replace('#', '').trim().toLowerCase();
-  const idx = TABS.findIndex((t) => t.id === hash);
+  const idx = SLIDES.findIndex((s) => s.id === hash);
   return idx >= 0 ? idx : 0;
 }
 
 export default function App() {
-  const [activeIndex, setActiveIndex] = useState<number>(getInitialTabIndex);
+  const [index, setIndex] = useState<number>(getInitialSlide);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const selectTab = useCallback((nextIdx: number) => {
-    const bounded = Math.max(0, Math.min(TABS.length - 1, nextIdx));
-    setActiveIndex(bounded);
-    const nextHash = `#${TABS[bounded].id}`;
+  const goTo = useCallback((next: number) => {
+    const clamped = Math.max(0, Math.min(SLIDES.length - 1, next));
+    setIndex(clamped);
+    const nextHash = `#${SLIDES[clamped].id}`;
     if (window.location.hash !== nextHash) {
       window.history.replaceState(null, '', nextHash);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
-    const onHashChange = () => setActiveIndex(getInitialTabIndex());
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    const onFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', onFsChange);
+    return () => document.removeEventListener('fullscreenchange', onFsChange);
+  }, []);
+
+  useEffect(() => {
+    const onHash = () => setIndex(getInitialSlide());
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
-      if (
-        target &&
-        (target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.tagName === 'SELECT' ||
-          target.isContentEditable)
-      ) {
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT')) {
         return;
       }
-      if (document.querySelector('[role="dialog"]')) {
-        return;
-      }
-      if (e.key === 'ArrowRight') {
+      if (document.querySelector('[role="dialog"]')) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
         e.preventDefault();
-        selectTab((activeIndex + 1) % TABS.length);
-      } else if (e.key === 'ArrowLeft') {
+        goTo(index + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
         e.preventDefault();
-        selectTab((activeIndex - 1 + TABS.length) % TABS.length);
+        goTo(index - 1);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(SLIDES.length - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        toggleFullscreen();
+      } else if (e.key >= '1' && e.key <= String(SLIDES.length)) {
+        goTo(Number(e.key) - 1);
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [activeIndex, selectTab]);
+  }, [index, goTo, toggleFullscreen]);
 
-  const progressPct = ((activeIndex + 1) / TABS.length) * 100;
+  const currentSlide = SLIDES[index];
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <header className="deck-header">
-        <div className="deck-progress-rail">
-          <div className="deck-progress-fill" style={{ width: `${progressPct}%` }} />
+    <div className={`deck-shell ${currentSlide.dark ? 'dark-mode' : ''}`}>
+      {/* Barra superior minimalista */}
+      <header className="deck-topbar">
+        <div
+          className="topbar-left"
+          onClick={() => goTo(0)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') goTo(0);
+          }}
+        >
+          <span className="logo-plate">
+            <ValleclaroLogo compact />
+          </span>
+          <span className="topbar-sep" />
+          <span className="topbar-caption">Lago de Datos Central · Pitch Deck</span>
         </div>
 
-        <div className="deck-header-inner">
-          <div className="deck-brand-row">
-            <div
-              className="deck-brand-left"
-              onClick={() => selectTab(0)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') selectTab(0);
-              }}
-            >
-              <span className="brand-pill-wrap">
-                <ValleclaroLogo compact />
-              </span>
-              <div className="deck-subtitle">
-                <span>Integración de Datos · v3</span>
-                <span>Propuesta Lago de Datos Central</span>
-              </div>
-            </div>
-
-            <div className="deck-controls">
-              <span className="kbd-hint">
-                <kbd>←</kbd> <kbd>→</kbd> Slides
-              </span>
-              <span className="slide-counter">
-                0{activeIndex + 1} / 0{TABS.length}
-              </span>
-              <span className="badge-case">Pitch 2026</span>
-            </div>
-          </div>
-
-          <nav className="deck-tabs" role="tablist" aria-label="Slides del pitch Valleclaro">
-            {TABS.map((tab, idx) => {
-              const Icon = TAB_ICONS[idx];
-              const isActive = idx === activeIndex;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-controls={`panel-${tab.id}`}
-                  className={`deck-tab ${isActive ? 'active' : ''}`}
-                  onClick={() => selectTab(idx)}
-                >
-                  <span className="deck-tab-num">{tab.num}</span>
-                  <Icon size={14} />
-                  <span>{tab.shortLabel}</span>
-                </button>
-              );
-            })}
-          </nav>
+        <div className="topbar-right">
+          <span className="mono" style={{ fontSize: 11.5, color: currentSlide.dark ? '#94a3b8' : 'var(--ink-soft)' }}>
+            ← → navegar
+          </span>
+          <button type="button" className="icon-btn" onClick={toggleFullscreen} title="Pantalla completa (F)">
+            {isFullscreen ? <Minimize size={13} /> : <Maximize size={13} />}
+            <span>{isFullscreen ? 'Salir' : 'Presentar'}</span>
+          </button>
         </div>
       </header>
 
-      <main className="deck-stage" id={`panel-${TABS[activeIndex].id}`} role="tabpanel">
-        {activeIndex === 0 && <ResumenTab onNavigateTab={selectTab} />}
-        {activeIndex === 1 && <AlternativasTab />}
-        {activeIndex === 2 && <ArquitecturaTab />}
-        {activeIndex === 3 && <SeguridadTab />}
-        {activeIndex === 4 && <ResilienciaTab />}
-        {activeIndex === 5 && <CostosTab />}
-        {activeIndex === 6 && <PocTab />}
+      {/* Escenario literal de slide (100% viewport) */}
+      <main className="slide-viewport">
+        <button
+          type="button"
+          className="edge-arrow left"
+          onClick={() => goTo(index - 1)}
+          disabled={index === 0}
+          aria-label="Slide anterior"
+        >
+          <ChevronLeft size={20} />
+        </button>
 
-        <TabFooterNav tabs={TABS} activeIndex={activeIndex} onSelect={selectTab} />
+        <section key={currentSlide.id} className="slide-frame" aria-live="polite">
+          {index === 0 && <CoverSlide onNext={() => goTo(1)} />}
+          {index === 1 && <ProblemSlide />}
+          {index === 2 && <CloudSlide />}
+          {index === 3 && <ArchSlide />}
+          {index === 4 && <FlowsSlide />}
+          {index === 5 && <SecuritySlide />}
+          {index === 6 && <ResilienceSlide />}
+          {index === 7 && <FinancePocSlide />}
+        </section>
+
+        <button
+          type="button"
+          className="edge-arrow right"
+          onClick={() => goTo(index + 1)}
+          disabled={index === SLIDES.length - 1}
+          aria-label="Siguiente slide"
+        >
+          <ChevronRight size={20} />
+        </button>
       </main>
 
-      <footer className="site-footer">
-        <div className="site-footer-inner">
-          <div>
-            <strong style={{ color: '#ffffff' }}>Valleclaro Comercial</strong> · Pitch Deck Interactivo · Lago Único
-            Multinube (v3)
-          </div>
-          <div>Dallas (Primaria) · Virginia (DR Tibio) · Querétaro (Bóveda 365 d) · 2026</div>
+      {/* Dock inferior de slides literales */}
+      <footer className="deck-dock">
+        <button
+          type="button"
+          className="icon-btn"
+          onClick={() => goTo(index - 1)}
+          disabled={index === 0}
+          style={{ opacity: index === 0 ? 0.35 : 1 }}
+        >
+          <ChevronLeft size={14} /> Anterior
+        </button>
+
+        <nav className="dock-segments" aria-label="Selector de slides">
+          {SLIDES.map((s, i) => (
+            <button
+              key={s.id}
+              type="button"
+              className={`dock-seg ${i === index ? 'active' : i < index ? 'passed' : ''}`}
+              onClick={() => goTo(i)}
+              aria-current={i === index ? 'step' : undefined}
+            >
+              <span className="dock-seg-bar" />
+              <span className="dock-seg-lbl">
+                0{i + 1} {s.label}
+              </span>
+            </button>
+          ))}
+        </nav>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span className="dock-counter">
+            0{index + 1} / 0{SLIDES.length}
+          </span>
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={() => goTo(index === SLIDES.length - 1 ? 0 : index + 1)}
+            style={{
+              background: currentSlide.dark ? '#0ea5e9' : 'var(--vc-cobalt)',
+              borderColor: currentSlide.dark ? '#0ea5e9' : 'var(--vc-cobalt)',
+              color: currentSlide.dark ? '#071327' : '#ffffff',
+            }}
+          >
+            {index === SLIDES.length - 1 ? 'Reiniciar' : 'Siguiente'} <ChevronRight size={14} />
+          </button>
         </div>
       </footer>
     </div>
