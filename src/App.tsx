@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Maximize, Minimize } from 'lucide-react';
 import { ValleclaroLogo } from './components/ValleclaroLogo';
-import { ArchSlide } from './slides/ArchSlide';
+import { ArchDiagramSlide } from './slides/ArchDiagramSlide';
+import { ArchSpecsSlide } from './slides/ArchSpecsSlide';
 import { CloudSlide } from './slides/CloudSlide';
 import { CoverSlide } from './slides/CoverSlide';
 import { FinancePocSlide } from './slides/FinancePocSlide';
 import { FlowsSlide } from './slides/FlowsSlide';
+import { OkrsKpisSlide } from './slides/OkrsKpisSlide';
 import { ProblemSlide } from './slides/ProblemSlide';
 import { ResilienceSlide } from './slides/ResilienceSlide';
 import { SecuritySlide } from './slides/SecuritySlide';
@@ -13,12 +15,14 @@ import { SecuritySlide } from './slides/SecuritySlide';
 const SLIDES = [
   { id: 'portada', label: 'Portada', dark: true },
   { id: 'diagnostico', label: 'Diagnóstico', dark: false },
-  { id: 'nube', label: 'Cloud 89/100', dark: false },
-  { id: 'arquitectura', label: 'Arquitectura', dark: false },
+  { id: 'nube', label: 'Cloud', dark: false },
+  { id: 'diagrama', label: 'Diagrama', dark: false },
+  { id: 'capas', label: 'Capas & Red', dark: false },
   { id: 'flujo', label: 'Flujo & TB', dark: false },
   { id: 'seguridad', label: 'Seguridad', dark: false },
   { id: 'resiliencia', label: 'Resiliencia', dark: false },
   { id: 'finanzas', label: 'Finanzas & PoC', dark: false },
+  { id: 'okrs', label: 'OKRs & KPIs', dark: false },
 ];
 
 function getInitialSlide(): number {
@@ -83,8 +87,10 @@ export default function App() {
       } else if (e.key === 'f' || e.key === 'F') {
         e.preventDefault();
         toggleFullscreen();
-      } else if (e.key >= '1' && e.key <= String(SLIDES.length)) {
+      } else if (e.key >= '1' && e.key <= '9') {
         goTo(Number(e.key) - 1);
+      } else if (e.key === '0') {
+        goTo(9);
       }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -92,10 +98,11 @@ export default function App() {
   }, [index, goTo, toggleFullscreen]);
 
   const currentSlide = SLIDES[index];
+  const slideNum = String(index + 1).padStart(2, '0');
+  const totalNum = String(SLIDES.length).padStart(2, '0');
 
   return (
     <div className={`deck-shell ${currentSlide.dark ? 'dark-mode' : ''}`}>
-      {/* Barra superior minimalista */}
       <header className="deck-topbar">
         <div
           className="topbar-left"
@@ -124,7 +131,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* Escenario literal de slide (100% viewport) */}
       <main className="slide-viewport">
         <button
           type="button"
@@ -140,11 +146,13 @@ export default function App() {
           {index === 0 && <CoverSlide onNext={() => goTo(1)} />}
           {index === 1 && <ProblemSlide />}
           {index === 2 && <CloudSlide />}
-          {index === 3 && <ArchSlide />}
-          {index === 4 && <FlowsSlide />}
-          {index === 5 && <SecuritySlide />}
-          {index === 6 && <ResilienceSlide />}
-          {index === 7 && <FinancePocSlide />}
+          {index === 3 && <ArchDiagramSlide />}
+          {index === 4 && <ArchSpecsSlide />}
+          {index === 5 && <FlowsSlide />}
+          {index === 6 && <SecuritySlide />}
+          {index === 7 && <ResilienceSlide />}
+          {index === 8 && <FinancePocSlide />}
+          {index === 9 && <OkrsKpisSlide />}
         </section>
 
         <button
@@ -158,7 +166,6 @@ export default function App() {
         </button>
       </main>
 
-      {/* Dock inferior de slides literales */}
       <footer className="deck-dock">
         <button
           type="button"
@@ -181,7 +188,7 @@ export default function App() {
             >
               <span className="dock-seg-bar" />
               <span className="dock-seg-lbl">
-                0{i + 1} {s.label}
+                {String(i + 1).padStart(2, '0')} {s.label}
               </span>
             </button>
           ))}
@@ -189,7 +196,7 @@ export default function App() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span className="dock-counter">
-            0{index + 1} / 0{SLIDES.length}
+            {slideNum} / {totalNum}
           </span>
           <button
             type="button"

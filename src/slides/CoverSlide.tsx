@@ -8,14 +8,14 @@ interface CoverSlideProps {
 export function CoverSlide({ onNext }: CoverSlideProps) {
   return (
     <div className="cover-stage">
-      {/* Top branding block echoing PDF cover */}
+      {/* Top branding block */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
         <div style={{ background: '#ffffff', padding: '10px 18px', display: 'inline-flex', alignItems: 'center' }}>
           <ValleclaroLogo />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span className="mono" style={{ fontSize: 11, letterSpacing: '0.12em', color: '#7dd3fc' }}>
-            INTEGRACIÓN DE DATOS · 2026
+            INTEGRACIÓN DE DATOS · TERCER CORTE
           </span>
           <span
             style={{
@@ -23,11 +23,11 @@ export function CoverSlide({ onNext }: CoverSlideProps) {
               color: '#071327',
               padding: '4px 10px',
               fontSize: 11,
-              fontWeight: 500,
+              fontWeight: 600,
               letterSpacing: '0.08em',
             }}
           >
-            VERSIÓN 3
+            CASO 2026
           </span>
         </div>
       </div>
@@ -35,11 +35,11 @@ export function CoverSlide({ onNext }: CoverSlideProps) {
       {/* Center hero statement */}
       <div style={{ margin: 'auto 0', padding: '24px 0' }}>
         <h1 className="cover-h1">
-          Un solo lago en <span>Google Cloud</span> para tres nubes
+          Un solo <strong>lago de datos</strong> en <strong>Google Cloud</strong> para tres nubes
         </h1>
         <div className="cover-accent-line" />
         <p className="cover-lead">
-          Cifra única de ventas, eliminación de 30 TB duplicados y control de acceso auditable — sin migrar AWS ni Azure.
+          Cifra única de ventas, retiro de 30 TB duplicados y trazabilidad de datos personales — conservando AWS y Azure.
         </p>
 
         <button

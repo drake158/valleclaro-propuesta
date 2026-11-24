@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react';
+
 interface SectionHeaderProps {
   kicker: string;
-  title: string;
+  title: ReactNode;
   subtitle?: string;
 }
 
