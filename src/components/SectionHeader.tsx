@@ -1,20 +1,18 @@
 interface SectionHeaderProps {
-  eyebrow: string;
+  kicker: string;
   title: string;
-  description: string;
-  pagesLabel: string;
+  tagline: string;
 }
 
-export function SectionHeader({ eyebrow, title, description, pagesLabel }: SectionHeaderProps) {
+export function SectionHeader({ kicker, title, tagline }: SectionHeaderProps) {
   return (
-    <div className="section-header">
-      <div className="section-header-top">
-        <span className="section-eyebrow">{eyebrow}</span>
-        <span className="section-page-tag">{pagesLabel}</span>
+    <div className="slide-head">
+      <div>
+        <div className="slide-kicker">{kicker}</div>
+        <h1 className="slide-title">{title}</h1>
+        <div className="slide-bar" />
       </div>
-      <h1 className="section-h1">{title}</h1>
-      <div className="section-cyan-bar" />
-      <p className="section-desc">{description}</p>
+      <p className="slide-tagline">{tagline}</p>
     </div>
   );
 }

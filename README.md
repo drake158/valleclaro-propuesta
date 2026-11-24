@@ -1,22 +1,15 @@
-# Valleclaro Comercial · Propuesta de Lago de Datos Central
+# Valleclaro Comercial · Pitch Deck Interactivo (Lago de Datos Central v3)
 
-Aplicación web interactiva organizada por pestañas que presenta el caso técnico y comercial completo de **Valleclaro Comercial** (*Un solo lago para tres nubes: AWS, Azure y Google Cloud*).
+Aplicación web estilo **pitch deck** moderna, visual e interactiva basada en `Documento_tecnico_Valleclaro_Comercial 3.pdf` y el diagrama `Valleclaro_ Hub Multinube y Lago Único.png`.
 
 🌐 **Sitio publicado (GitHub Pages):** https://drake158.github.io/valleclaro-propuesta/
 
-## Contenido por pestañas
+## Slides del Pitch Deck
 
-0. **Resumen Ejecutivo:** Portada corporativa, indicadores clave, problemática actual y recomendación ejecutiva.
-1. **Análisis de Alternativas:** Matriz ponderada (GCP 89,00 vs. Azure 73,75 vs. AWS 66,50), capacidades, servicios de referencia, simulador de tarifas de egreso y plan de portabilidad.
-2. **Arquitectura Multinube:** Visor de alta resolución con lightbox/zoom del diagrama *Valleclaro: Hub Multinube y Lago Único*, explorador interactivo de componentes, zonas Bronze/Silver/Gold, flujos de ingesta, red HA VPN/BGP, plan CIDR y eliminación de 30 TB duplicados.
-3. **Seguridad y Cumplimiento:** Federación con Microsoft Entra ID, protocolo de baja ≤ 15 min (IAM-01), RBAC por 8 grupos, auditoría, Ley 1581 de 2012 (SIC), checklist DR 3.9.1 y pruebas SEC-01 a SEC-10.
-4. **Replicación y Resiliencia:** Topología de 3 regiones (Dallas, Virginia y Querétaro), runbook interactivo DR-RB-01, RTO/RPO, dependencias D-1 a D-10, copias 3-2-1 y pruebas DR.
-5. **Costos, FinOps y Cronograma:** Evolución mensual interactiva (Mes 1–18), presupuesto Año 1 y 18 meses, simulador de sensibilidad, etiquetas/alertas FinOps, observabilidad, equipo de 14 personas (RACI) y Gantt de 3 fases.
-
-## Desarrollo local
-
-```bash
-npm install
-npm run dev
-npm run build
-```
+- **00 · Pitch Ejecutivo:** Hero KPIs conciliados (v3), transformación visual *Hoy vs. Con Lago Único* y acceso rápido.
+- **01 · Selección Cloud (89/100):** Podio visual, matriz interactiva de 6 criterios, gráfico de 7 capacidades, simulador slider de egreso y estrategia anti lock-in.
+- **02 · Arquitectura Multinube:** Visor de alta resolución con lightbox/zoom, 8 componentes interactivos, gráfico de latencias vs. SLA y evolución de almacenamiento (83 → 138,6 TB).
+- **03 · Seguridad y Ley 1581:** Protocolo visual de baja (21 días → ≤ 15 min), federación Entra ID, simulador RBAC de 8 roles y 10 pruebas `SEC-01..10`.
+- **04 · Replicación y Resiliencia:** 3 regiones (Dallas, Virginia, Querétaro), gráfico comparativo RTO/RPO (Objetivo vs. Diseño vs. PoC), donut de costo incremental DR (USD 3.204/m) y runbook interactivo `DR-RB-01`.
+- **05 · Finanzas, OKRs y Plan:** Presupuesto conciliado v3 (COP 879,95M Año 1 · COP 85,30M/m M18), gráfico mensual M1–M18 + donut M18, simulador interactivo del límite consolidado COP 210M, 4 OKRs (`O1`–`O4`), Gantt 18 meses y equipo de 14 TI.
+- **06 · PoC Simulada (Anexo A):** Piloto de 4 semanas (100k registros sintéticos, 280 h, COP 20,70M), métricas de calidad/DR y simulador de Looker.
